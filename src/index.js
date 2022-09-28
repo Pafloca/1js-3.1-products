@@ -48,10 +48,10 @@ try {
 
 // Mostramos por consola todo lo que nos piden
 console.log('LISTADO DEL ALMACÉN por existencias')
-myStore.orderByUnitsDesc().forEach(prod=>console.log('- '+prod.name))
+myStore.orderByUnitsDesc().forEach(prod=>console.log('- '+prod))
 
 console.log('LISTADO DEL ALMACÉN por nombre')
-myStore.orderByName().forEach(prod=>console.log('- '+prod.name))
+myStore.orderByName().forEach(prod=>console.log('- '+prod))
 
 console.log('LISTADO DE PRODUCTOS CON POCAS EXISTENCIAS')
-myStore.underStock(10).forEach(prod=>console.log('- '+prod.name))
+myStore.underStock(10).forEach(prod=>console.log('- '+prod))
