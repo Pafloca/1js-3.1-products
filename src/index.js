@@ -6,6 +6,9 @@ const Store = require('./store.class');
 const myStore = new Store(1, 'Almacén de ACME')
 
 // Añadimos los objetos
+
+myStore.initDate();
+
 try {
     var catInformatica = myStore.addCategory('Informática')
 } catch(err) {
@@ -48,10 +51,10 @@ try {
 
 // Mostramos por consola todo lo que nos piden
 console.log('LISTADO DEL ALMACÉN por existencias')
-myStore.orderByUnitsDesc().forEach(prod=>console.log('- '+prod.name))
+myStore.orderByUnitsDesc().forEach(prod=>console.log('- '+prod))
 
 console.log('LISTADO DEL ALMACÉN por nombre')
-myStore.orderByName().forEach(prod=>console.log('- '+prod.name))
+myStore.orderByName().forEach(prod=>console.log('- '+prod))
 
 console.log('LISTADO DE PRODUCTOS CON POCAS EXISTENCIAS')
-myStore.underStock(10).forEach(prod=>console.log('- '+prod.name))
+myStore.underStock(10).forEach(prod=>console.log('- '+prod))
