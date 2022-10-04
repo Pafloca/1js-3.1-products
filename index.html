@@ -126,6 +126,21 @@
 							<fieldset>
 								<legend class="bg-dark text-white text-center">Añadir categoría</legend>
 								<!-- Aquí los inputs y botones del form -->
+								<div class="form-group">
+									<label for="newcat-id">ID:</label>
+									<input type="text" class="form-control" disabled>
+								</div>
+								<div class="form-group">
+									<label for="newcat-name">Nombre:</label>
+									<input type="text" id="newcat-name" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="newcat-desc">Descripción:</label>
+									<input type="text" id="newcat-desc" class="form-control">
+								</div>
+								<br>
+								<button type="submit" id= "new-cat" class="btn btn-default btn-dark">Añadir</button>
+								<button type="reset" class="btn btn-danger">Reset</button>
 							</fieldset>
 						</form>
 					</div>
@@ -148,6 +163,13 @@
 							<fieldset>
 								<legend class="bg-dark text-white text-center">Eliminar categoría</legend>
 								<!-- Aquí los inputs y botones del form -->
+								<div class="form-group">
+									<label for="delcat-id">ID:</label>
+									<input type="text" class="form-control">
+								</div>
+								<br>
+								<button type="submit" class="btn btn-default btn-dark">Añadir</button>
+								<button type="reset" class="btn btn-danger">Reset</button>
 							</fieldset>
 						</form>
 					</div>

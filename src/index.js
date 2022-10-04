@@ -37,4 +37,13 @@ window.addEventListener('load', () => {
     myController.deleteProductFromStore(document.getElementById('delprod-id').value)      
   })
 
+  document.getElementById('new-cat').addEventListener('submit', (event) => {
+    event.preventDefault()
+    
+    const name = document.getElementById('newcat-name').value
+    const desc = document.getElementById('newcat-desc').value 
+    
+    myController.addCategoryToStore({ name, desc })   
+  })
+
 })
