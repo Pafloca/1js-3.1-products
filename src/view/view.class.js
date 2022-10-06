@@ -43,6 +43,7 @@ class View {
         producto.innerHTML = `${error} 
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="this.parentElement.remove()"></button>`;
         tabla.appendChild(producto);
+        setInterval(function () {tabla.remove()}, 3000);
     }
 
     total(suma) {
