@@ -1,5 +1,6 @@
 const Category = require('./category.class');
 const Product = require('./product.class');
+const datosIni = require('../datosIni.json'); 
 
 class Store{
     constructor(id, name) {
@@ -10,7 +11,7 @@ class Store{
     }
 
     getCategoryById(id) {
-        let getCategory = this.categories.find(category => category.id === id);
+        let getCategory = this.categories.find(category => category.id == id);
         if(!getCategory) {
             throw 'La id no existe'
         }
@@ -26,7 +27,7 @@ class Store{
     }
 
     getProductById(id) {
-        let getProduct = this.products.find(product => product.id === id);
+        let getProduct = this.products.find(product => product.id == id);
         if(!getProduct) {
             throw 'El id no existe'
         }
@@ -35,7 +36,7 @@ class Store{
 
     
     getProductsByCategory(id) {
-        return this.products.filter(producto => producto.category === id)
+        return this.products.filter(producto => producto.category == id)
     }
 
     addCategory(name, descripcion) {
@@ -49,7 +50,7 @@ class Store{
             if(this.categories.length === 0) {
                 maximoId = 1;
             } else {
-                maximoId = this.categories[(this.categories.length) - 1].id + 1;
+                maximoId = this.categories.reduce((max, num)  => (num.id < max) ? max : num.id, 0) + 1
             }
             let category = new Category(maximoId, name, descripcion);
             this.categories.push(category);
@@ -61,6 +62,11 @@ class Store{
     
 
     addProduct(payload) {
+
+        let price = parseInt(payload.price);
+        let units = parseInt(payload.units);
+
+
         if(!payload.name) {
             throw 'Debes de poner un nombre'
         }
@@ -70,23 +76,23 @@ class Store{
 
         this.getCategoryById(payload.category);
 
-        if(!payload.price || payload.price < 0 || typeof payload.price !== 'number') {
+        if(!price || price < 0 || typeof price !== 'number') {
             throw 'Debes de poner un precio'
         }
-        if(payload.units) {
-            if (payload.units <= 0 || isNaN(payload.units) || !Number.isInteger(payload.units)) {
+        if(units) {
+            if (units <= 0 || isNaN(units) || !Number.isInteger(units)) {
                 throw 'Debes de poner una unidad'
             }
         }
 
-        let maximoId;
+        let maximoId = 0;
             if(this.products.length === 0) {
                 maximoId = 1;
             } else {
-                maximoId = this.products[(this.products.length) - 1].id + 1;
+                maximoId = this.products.reduce((max, num)  => (num.id < max) ? max : num.id, 0) + 1
             }
 
-        let product = new Product (maximoId, payload.name, payload.category, payload.price, payload.units);
+        let product = new Product (maximoId, payload.name, payload.category, price, units);
 
         this.products.push(product);
         return product;
@@ -140,6 +146,14 @@ class Store{
         this.products.forEach((producto) => {
             producto.toString;
         })
+    }
+
+    initDate() {
+        let categorias = datosIni.categories;
+        categorias.forEach((categoria) => {this.categories.push(new Category(categoria.id, categoria.name, categoria.description))})
+
+        let productos = datosIni.products;
+        productos.forEach((producto) => {this.products.push(new Product(producto.id, producto.name, producto.category, producto.price, producto.units))})
     }
 
 }
