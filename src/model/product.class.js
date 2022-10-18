@@ -8,7 +8,8 @@ class Product{
     }
 
     productImport() {
-        return this.price * this.units;
+        let num = this.price * this.units;
+        return num;
     }
 
     toString() {

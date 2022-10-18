@@ -59,6 +59,41 @@ class Store{
         throw 'Ya existe la categoria'
     }
 
+    modProduct(payload) {
+        let price = parseInt(payload.price);
+        let units = parseInt(payload.units);
+
+
+        if(!payload.name) {
+            throw 'Debes de poner un nombre'
+        }
+        if(!payload.category) {
+            throw 'Debes de poner una categoria'
+        }
+
+        this.getCategoryById(payload.category);
+
+        if(!price || price < 0 || typeof price !== 'number') {
+            throw 'Debes de poner un precio'
+        }
+        if(units) {
+            if (units <= 0 || isNaN(units) || !Number.isInteger(units)) {
+                throw 'Debes de poner una unidad'
+            }
+        }
+
+        let newProduct = new Product(payload.id, payload.name, payload.category, price, units);
+
+        this.products[payload.id - 1] = newProduct;
+
+        for(let i = 0; i< this.products.length; i++) {
+            console.log(this.products[i]);
+        }
+
+
+        return newProduct;
+    }
+
     
 
     addProduct(payload) {
@@ -86,15 +121,15 @@ class Store{
         }
 
         let maximoId = 0;
-            if(this.products.length === 0) {
-                maximoId = 1;
-            } else {
-                maximoId = this.products.reduce((max, num)  => (num.id < max) ? max : num.id, 0) + 1
-            }
+        if(this.products.length === 0) {
+            maximoId = 1;
+        } else {
+            maximoId = this.products.reduce((max, num)  => (num.id < max) ? max : num.id, 0) + 1
+        }
 
         let product = new Product (maximoId, payload.name, payload.category, price, units);
-
         this.products.push(product);
+        
         return product;
     }
 
@@ -124,7 +159,7 @@ class Store{
 
     totalImport() {
         let importe = this.products.reduce((total, imp) => total += imp.productImport(), 0);
-        return importe;
+        return importe.toFixed(2);
     }
 
     orderByUnitsDesc() {
@@ -154,6 +189,23 @@ class Store{
 
         let productos = datosIni.products;
         productos.forEach((producto) => {this.products.push(new Product(producto.id, producto.name, producto.category, producto.price, producto.units))})
+    }
+
+    masUds(payload) {
+        let producto = this.getProductById(payload.id);
+        let unidades = producto.units + 1;
+        producto.units = unidades;
+        return producto;
+    }
+
+    menUds(payload) {
+        let producto = this.getProductById(payload.id);
+        let unidades = producto.units - 1;
+        if (unidades < 0) {
+            throw "No puedes poner unidades menores que 0"
+        }
+        producto.units = unidades;
+        return producto;
     }
 
 }

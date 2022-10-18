@@ -13,19 +13,14 @@ window.addEventListener('load', () => {
   document.getElementById('new-prod').addEventListener('submit', (event) => {
     event.preventDefault()
 
+    const id = document.getElementById('newprod-id').value
     const name = document.getElementById('newprod-name').value
     const price = document.getElementById('newprod-price').value 
     const category = document.getElementById('newprod-cat').value
     const units = document.getElementById('newprod-units').value
 
-    myController.addProductToStore({ name, category, price, units })
+    myController.addProductToStore({ id, name, category, price, units })
 
-  })
-
-  document.getElementById('del-prod').addEventListener('submit', (event) => {
-    event.preventDefault()
-
-    myController.deleteProductFromStore(document.getElementById('delprod-id').value)      
   })
 
   document.getElementById('del-cat').addEventListener('submit', (event) => {

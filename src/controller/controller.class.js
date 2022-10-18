@@ -18,19 +18,33 @@ class Controller{
 
     addProductToStore(payload) {
         try {
-            let producto = this.store.addProduct(payload);
-            this.view.anyadirProducto(producto);
-            this.view.total(this.store.totalImport());
+            if(payload.id) {
+                this.modificarProducto(payload);
+            } else {
+                let producto = this.store.addProduct(payload);
+                this.view.anyadirProducto(producto, this.deleteProductFromStore.bind(this), this.sumarProducto.bind(this), this.restarProducto.bind(this), this.editarProducto.bind(this));
+                this.view.total(this.store.totalImport());
+            }  
         } catch(error) {
             this.view.renderError(error);
         }
         
     }
+
+    modificarProducto(payload) {
+        try{
+            let producto = this.store.modProduct(payload);
+            this.view.modProduct(producto);
+            this.view.total(this.store.totalImport());
+        } catch(error) {
+            this.view.renderError(error);
+        }
+    }
     
     init() {
         this.store.initDate();
         this.store.categories.forEach((categoria) => this.view.anyadirCategoria(categoria))
-        this.store.products.forEach((producto) => this.view.anyadirProducto(producto))
+        this.store.products.forEach((producto) => this.view.anyadirProducto(producto, this.deleteProductFromStore.bind(this), this.sumarProducto.bind(this), this.restarProducto.bind(this), this.editarProducto.bind(this)))
         this.view.total(this.store.totalImport());
     }
 
@@ -50,6 +64,27 @@ class Controller{
         } catch(error) {
             this.view.renderError(error);
         }
+    }
+
+    sumarProducto(payload) {
+        let producto = this.store.masUds(payload);
+        this.view.units(producto);
+        this.view.total(this.store.totalImport());
+    }
+
+    restarProducto(payload) {
+        try{
+           let producto = this.store.menUds(payload);
+            this.view.units(producto);
+            this.view.total(this.store.totalImport());
+        } catch(error) {
+            this.view.renderError(error);
+        }
+    }
+
+    editarProducto(payload) {
+        let producto = this.store.getProductById(payload.id);
+        this.view.editar(producto);
     }
 }
 
