@@ -9,8 +9,9 @@ class Controller{
 
     addCategoryToStore(payload) {
         try{
-            let categoria = this.store.addCategory(payload.name, payload.description);
+            let categoria = this.store.addCategory(payload.name, payload.desc);
             this.view.anyadirCategoria(categoria);
+            this.view.vistaCategorias();
         } catch(error) {
             this.view.renderError(error);
         }
@@ -24,6 +25,7 @@ class Controller{
                 let producto = this.store.addProduct(payload);
                 this.view.anyadirProducto(producto, this.deleteProductFromStore.bind(this), this.sumarProducto.bind(this), this.restarProducto.bind(this), this.editarProducto.bind(this));
                 this.view.total(this.store.totalImport());
+                this.view.vistaProductos();
             }  
         } catch(error) {
             this.view.renderError(error);
@@ -36,6 +38,8 @@ class Controller{
             let producto = this.store.modProduct(payload);
             this.view.modProduct(producto);
             this.view.total(this.store.totalImport());
+            this.view.cambiarTituloAnyadir();
+            this.view.vistaProductos();
         } catch(error) {
             this.view.renderError(error);
         }
@@ -46,6 +50,23 @@ class Controller{
         this.store.categories.forEach((categoria) => this.view.anyadirCategoria(categoria))
         this.store.products.forEach((producto) => this.view.anyadirProducto(producto, this.deleteProductFromStore.bind(this), this.sumarProducto.bind(this), this.restarProducto.bind(this), this.editarProducto.bind(this)))
         this.view.total(this.store.totalImport());
+        this.iniciarMenu();
+        this.view.vistaProductos();
+    }
+
+    iniciarMenu() {
+        document.getElementById('productosList').addEventListener('click', () => {
+            this.view.vistaProductos();
+           })   
+           document.getElementById('categoriasList').addEventListener('click', () => {
+            this.view.vistaCategorias();
+           })
+           document.getElementById('anyadirProductos').addEventListener('click', () => {
+            this.view.vistaAnyadirProductos();
+           })
+           document.getElementById('anyadirCategorias').addEventListener('click', () => {
+            this.view.vistaAnyadirCategorias();
+           })   
     }
 
     deleteProductFromStore(id) {
@@ -85,6 +106,7 @@ class Controller{
     editarProducto(payload) {
         let producto = this.store.getProductById(payload.id);
         this.view.editar(producto);
+        this.view.vistaAnyadirProductos();
     }
 }
 

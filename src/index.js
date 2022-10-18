@@ -20,6 +20,7 @@ window.addEventListener('load', () => {
     const units = document.getElementById('newprod-units').value
 
     myController.addProductToStore({ id, name, category, price, units })
+    document.getElementById('new-prod').reset();
 
   })
 
@@ -33,9 +34,16 @@ window.addEventListener('load', () => {
     event.preventDefault()
     
     const name = document.getElementById('newcat-name').value
-    const desc = document.getElementById('newcat-desc').value 
+    let desc = document.getElementById('newcat-desc').value 
+
+    if (desc == "") {
+      let undefined;
+      desc = undefined;
+    }
     
     myController.addCategoryToStore({ name, desc })   
+
+    document.getElementById('new-cat').reset();
   })
 
 })

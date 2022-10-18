@@ -6,6 +6,16 @@ class View {
         option.setAttribute('id', 'cat-' + payload.id);
         option.text = payload.name;
         categoria.add(option);
+
+        let tabla = document.querySelector("#categorias tbody");
+        var newCategoria = document.createElement("tr");
+        newCategoria.setAttribute('id', 'cat-' + payload.id);
+        newCategoria.setAttribute('class', 'text-center');
+        newCategoria.innerHTML = `
+        <td>${payload.id}</td>
+        <td>${payload.name}</td>
+        <td>${payload.description}</td>`;
+        tabla.appendChild(newCategoria);
         
     }
 
@@ -19,8 +29,8 @@ class View {
         <td>${payload.name}</td>
         <td>${payload.category}</td>
         <td id="units-${payload.id}">${payload.units}</td>
-        <td>${payload.price}</td>
-        <td id="import-${payload.id}">${payload.productImport()}</td>
+        <td>${payload.price} €</td>
+        <td id="import-${payload.id}">${payload.productImport()} €</td>
         <td>
         <button class="btn btn-primary" id="rest-${payload.id}">
         <span class="material-icons">expand_more</span>
@@ -90,10 +100,16 @@ class View {
         let tabla = document.getElementById("units-" + payload.id);
         tabla.textContent = payload.units;
         let importe = document.getElementById("import-" + payload.id);
-        importe.textContent = payload.productImport().toFixed(2);
+        importe.textContent = `${payload.productImport().toFixed(2)} €`;
     }
 
     editar(payload) {
+        const titulo = document.querySelector('#new-prod legend');
+        titulo.textContent = `Modificar producto`;
+
+        const boton = document.getElementById('newprod-submit');
+        boton.textContent = `Modificar`;
+
         document.getElementById("newprod-id").value = payload.id;
         document.getElementById("newprod-name").value = payload.name;
         document.getElementById("newprod-cat").value = payload.category;
@@ -101,15 +117,57 @@ class View {
         document.getElementById("newprod-price").value = payload.price;
     }
 
+    cambiarTituloAnyadir() {
+        const titulo = document.querySelector('#new-prod legend');
+        titulo.textContent = `Añadir producto`;
+
+        const boton = document.getElementById('newprod-submit');
+        boton.textContent = `Añadir`;
+    }
+
     modProduct(payload) {
         let producto = document.getElementById("prod-" + payload.id).children;
         producto[1].textContent = payload.name;
         producto[2].textContent = payload.category;
         producto[3].textContent = payload.units;
-        producto[4].textContent = payload.price;
-        producto[5].textContent = payload.productImport().toFixed(2);
+        producto[4].textContent = `${payload.price} €`;
+        producto[5].textContent = `${payload.productImport().toFixed(2)} €`;
 
     }
+
+    vistaProductos() {
+        document.getElementById("listadoDeProductos-id").classList.remove('oculto');
+        document.getElementById("listadoDeCategorias-id").classList.add('oculto');
+        document.getElementById("anyadirProducto-id").classList.add('oculto');
+        document.getElementById("anyadirCategoria-id").classList.add('oculto');
+        document.getElementById("eliminarCategoria-id").classList.add('oculto');
+    }
+
+    vistaCategorias() {
+        document.getElementById("listadoDeProductos-id").classList.add('oculto');
+        document.getElementById("listadoDeCategorias-id").classList.remove('oculto');
+        document.getElementById("anyadirProducto-id").classList.add('oculto');
+        document.getElementById("anyadirCategoria-id").classList.add('oculto');
+        document.getElementById("eliminarCategoria-id").classList.add('oculto');
+    }
+
+    vistaAnyadirProductos() {
+        document.getElementById("listadoDeProductos-id").classList.add('oculto');
+        document.getElementById("listadoDeCategorias-id").classList.add('oculto');
+        document.getElementById("anyadirProducto-id").classList.remove('oculto');
+        document.getElementById("anyadirCategoria-id").classList.add('oculto');
+        document.getElementById("eliminarCategoria-id").classList.add('oculto');
+    }
+
+    vistaAnyadirCategorias() {
+        document.getElementById("listadoDeProductos-id").classList.add('oculto');
+        document.getElementById("listadoDeCategorias-id").classList.add('oculto');
+        document.getElementById("anyadirProducto-id").classList.add('oculto');
+        document.getElementById("anyadirCategoria-id").classList.remove('oculto');
+        document.getElementById("eliminarCategoria-id").classList.add('oculto');
+    }
+
+
 }
 
 module.exports = View
