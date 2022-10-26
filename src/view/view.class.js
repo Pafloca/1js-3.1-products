@@ -112,6 +112,7 @@ class View {
 
         document.getElementById("newprod-id").value = payload.id;
         document.getElementById("newprod-name").value = payload.name;
+        document.getElementById("newprod-name").nextElementSibling.classList.add('oculto');
         document.getElementById("newprod-cat").value = payload.category;
         document.getElementById("newprod-units").value = payload.units;
         document.getElementById("newprod-price").value = payload.price;
@@ -123,6 +124,8 @@ class View {
 
         const boton = document.getElementById('newprod-submit');
         boton.textContent = `Añadir`;
+
+        document.getElementById("newprod-name").nextElementSibling.classList.remove('oculto');
     }
 
     modProduct(payload) {

@@ -7,6 +7,43 @@ class Controller{
         this.view = new View();
     }
 
+
+    listenersValidator() {
+        const nombre = document.getElementById('newprod-name');
+        nombre.addEventListener('blur', () => {
+            if (this.store.encontrarNombre(nombre.value)) {
+                nombre.setCustomValidity("Ese producto ya existe");
+            } else {
+                nombre.setCustomValidity(""); 
+            }
+            nombre.nextElementSibling.textContent = nombre.validationMessage;
+        })
+
+        const categoria = document.getElementById('newprod-cat');
+        categoria.addEventListener('blur', () => {
+            categoria.nextElementSibling.textContent = categoria.validationMessage;
+        })
+
+        const precio = document.getElementById('newprod-price');
+        precio.addEventListener('blur', () => {
+            precio.nextElementSibling.textContent = precio.validationMessage;
+        })
+
+        const unidad = document.getElementById('newprod-units');
+        unidad.addEventListener('blur', () => {
+            unidad.nextElementSibling.textContent = unidad.validationMessage;
+        })
+
+        const form = document.getElementById("new-prod");
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            nombre.nextElementSibling.textContent = nombre.validationMessage;
+            categoria.nextElementSibling.textContent = categoria.validationMessage;
+            precio.nextElementSibling.textContent = precio.validationMessage;
+            unidad.nextElementSibling.textContent = unidad.validationMessage;
+        })
+    }
+    
     addCategoryToStore(payload) {
         try{
             let categoria = this.store.addCategory(payload.name, payload.desc);
@@ -18,19 +55,20 @@ class Controller{
     }
 
     addProductToStore(payload) {
-        try {
-            if(payload.id) {
-                this.modificarProducto(payload);
-            } else {
-                let producto = this.store.addProduct(payload);
-                this.view.anyadirProducto(producto, this.deleteProductFromStore.bind(this), this.sumarProducto.bind(this), this.restarProducto.bind(this), this.editarProducto.bind(this));
-                this.view.total(this.store.totalImport());
-                this.view.vistaProductos();
-            }  
-        } catch(error) {
-            this.view.renderError(error);
+        if (document.getElementById("new-prod").checkValidity()) {
+            try {
+                if(payload.id) {
+                    this.modificarProducto(payload);
+                } else {
+                    let producto = this.store.addProduct(payload);
+                    this.view.anyadirProducto(producto, this.deleteProductFromStore.bind(this), this.sumarProducto.bind(this), this.restarProducto.bind(this), this.editarProducto.bind(this));
+                    this.view.total(this.store.totalImport());
+                    this.view.vistaProductos();
+                }  
+            } catch(error) {
+                this.view.renderError(error);
+            }
         }
-        
     }
 
     modificarProducto(payload) {
@@ -52,6 +90,7 @@ class Controller{
         this.view.total(this.store.totalImport());
         this.iniciarMenu();
         this.view.vistaProductos();
+        this.listenersValidator();
     }
 
     iniciarMenu() {

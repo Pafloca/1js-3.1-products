@@ -203,6 +203,14 @@ class Store{
         return producto;
     }
 
+    encontrarNombre(name) {
+        let getProduct = this.products.find(producto => producto.name.toLocaleUpperCase() === name.toLocaleUpperCase());
+        if(!getProduct) {
+            return false;
+        }
+        return true;
+    }
+
 }
 
 module.exports = Store
