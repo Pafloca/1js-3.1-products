@@ -1,6 +1,6 @@
 const Category = require('./category.class');
 const Product = require('./product.class');
-const datosIni = require('../datosIni.json'); 
+const SERVER = 'http://localhost:3000'
 
 class Store{
     constructor(id, name) {
@@ -178,12 +178,22 @@ class Store{
         })
     }
 
-    initDate() {
-        let categorias = datosIni.categories;
-        categorias.forEach((categoria) => {this.categories.push(new Category(categoria.id, categoria.name, categoria.description))})
+    async initDate() {
+        
+        const categorias = await this.getTable2("categories")
+        categorias.forEach((categoria) => this.categories.push(new Category(categoria.id, categoria.name, categoria.description)))
 
-        let productos = datosIni.products;
-        productos.forEach((producto) => {this.products.push(new Product(producto.id, producto.name, producto.category, producto.price, producto.units))})
+        const productos = await this.getTable2("products")
+        productos.forEach(producto => this.products.push(new Product(producto.id, producto.name, producto.category, producto.price, producto.units)))
+    }
+
+    async getTable2(table) {
+        const peticion = await fetch(SERVER + '/' + table);
+        if (!peticion.ok) {
+            throw `Error ${peticion.status} de la BBDD: ${peticion.statusText}`
+        }
+        const posts = await peticion.json();
+        return posts;
     }
 
     masUds(payload) {
@@ -210,6 +220,112 @@ class Store{
         }
         return true;
     }
+
+    anyadirCategoriaBD(categoria) {
+        return new Promise((resolve, reject) => {
+            const peticion = new XMLHttpRequest();
+            peticion.open('POST', SERVER + '/categories');
+            peticion.setRequestHeader('Content-type', 'application/json')
+            peticion.send(JSON.stringify(categoria));
+            peticion.addEventListener('load', () => {
+              if (peticion.status === 201) {
+                resolve(JSON.parse(peticion.responseText));
+              } else {
+                reject("Error " + this.status + " (" + this.statusText + ") en la petición");
+              }
+            })
+            peticion.addEventListener('error', () => reject('Error en la petición HTTP'));
+          })
+      }
+    
+      anyadirProductoBD(producto) {
+        return new Promise((resolve, reject) => {
+            const peticion = new XMLHttpRequest();
+            peticion.open('POST', SERVER + '/products');
+            peticion.setRequestHeader('Content-type', 'application/json')
+            peticion.send(JSON.stringify(producto));
+            peticion.addEventListener('load', () => {
+              if (peticion.status === 201) {
+                resolve(JSON.parse(peticion.responseText));
+              } else {
+                reject("Error " + this.status + " (" + this.statusText + ") en la petición");
+              }
+            })
+            peticion.addEventListener('error', () => reject('Error en la petición HTTP'));
+          })
+      }
+    
+      deleteProductoBD(table) {
+        return new Promise((resolve, reject) => {
+            const peticion = new XMLHttpRequest();
+            peticion.open('DELETE', SERVER + '/' + table);
+            peticion.send();
+            peticion.addEventListener('load', () => {
+              if (peticion.status === 200) {
+                resolve(JSON.parse(peticion.responseText));
+              } else {
+                reject("Error " + this.status + " (" + this.statusText + ") en la petición");
+              }
+            })
+            peticion.addEventListener('error', () => reject('Error en la petición HTTP'));
+          })
+      }
+
+      deleteCategoryBD(table) {
+        return new Promise((resolve, reject) => {
+            const peticion = new XMLHttpRequest();
+            peticion.open('DELETE', SERVER + '/' + table);
+            peticion.send();
+            peticion.addEventListener('load', () => {
+              if (peticion.status === 200) {
+                resolve(JSON.parse(peticion.responseText));
+              } else {
+                reject("Error " + this.status + " (" + this.statusText + ") en la petición");
+              }
+            })
+            peticion.addEventListener('error', () => reject('Error en la petición HTTP'));
+          })
+      }
+
+      anyadirUnidadesBD(unidades, id) {
+        return new Promise((resolve, reject) => {
+            const peticion = new XMLHttpRequest();
+            peticion.open('PATCH', SERVER + '/products/' + id);
+            peticion.setRequestHeader('Content-type', 'application/json')
+            peticion.send(JSON.stringify({units:unidades}));
+            peticion.addEventListener('load', () => {
+              if (peticion.status === 200) {
+                resolve(JSON.parse(peticion.responseText));
+              } else {
+                reject("Error " + this.status + " (" + this.statusText + ") en la petición");
+              }
+            })
+            peticion.addEventListener('error', () => reject('Error en la petición HTTP'));
+          })
+      }
+
+      modificarProductoBD(producto) {
+        return new Promise((resolve, reject) => {
+            const peticion = new XMLHttpRequest();
+            peticion.open('PUT', SERVER + '/products/' + producto.id);
+            peticion.setRequestHeader('Content-type', 'application/json')
+            peticion.send(JSON.stringify({
+                id: producto.id,
+                name: producto.name,
+                category: parseInt(producto.category),
+                price: parseInt(producto.price),
+                units: parseInt(producto.units) 
+            }));
+            peticion.addEventListener('load', () => {
+              if (peticion.status === 200) {
+                resolve(JSON.parse(peticion.responseText));
+              } else {
+                reject("Error " + this.status + " (" + this.statusText + ") en la petición");
+              }
+            })
+            peticion.addEventListener('error', () => reject('Error en la petición HTTP'));
+          })
+      }
 
 }
 

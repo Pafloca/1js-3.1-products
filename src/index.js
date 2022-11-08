@@ -4,11 +4,13 @@
 const Controller = require('./controller/controller.class')
 
 const myController = new Controller()
-myController.init()
+
 
 // A continuación crearemos una función manejadora para cada formulario
 window.addEventListener('load', () => {
 
+  myController.init()
+  
   // función manejadora del formulario 'new-prod'
   document.getElementById('new-prod').addEventListener('submit', (event) => {
     event.preventDefault()

@@ -1,5 +1,5 @@
 class View {
-    anyadirCategoria(payload) {
+    anyadirCategoria(payload, funcionDel) {
         let categoria = document.getElementById("newprod-cat");
         var option = document.createElement("option");
         option.setAttribute('value', payload.id);
@@ -14,8 +14,20 @@ class View {
         newCategoria.innerHTML = `
         <td>${payload.id}</td>
         <td>${payload.name}</td>
-        <td>${payload.description}</td>`;
+        <td>${payload.description}</td>
+        <td>
+        <button class="btn btn-danger" id="delcat-${payload.id}">
+        <span class="material-icons">delete</span>
+        </button>
+        </td>
+        `;
         tabla.appendChild(newCategoria);
+        document.getElementById('delcat-' + payload.id).addEventListener('click', () => {
+            let mensaje = confirm("Seguro que quieres borrar esta categoria?!");
+            if (mensaje) {
+                funcionDel(payload.id);
+            }
+           })
         
     }
 
@@ -88,7 +100,7 @@ class View {
         producto.innerHTML = `${error} 
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="this.parentElement.remove()"></button>`;
         tabla.appendChild(producto);
-        setInterval(function () {tabla.remove()}, 3000);
+        setInterval(function () {producto.remove()}, 3000);
     }
 
     total(suma) {
@@ -169,8 +181,6 @@ class View {
         document.getElementById("anyadirCategoria-id").classList.remove('oculto');
         document.getElementById("eliminarCategoria-id").classList.add('oculto');
     }
-
-
 }
 
 module.exports = View

@@ -47,7 +47,11 @@ class Controller{
     addCategoryToStore(payload) {
         try{
             let categoria = this.store.addCategory(payload.name, payload.desc);
-            this.view.anyadirCategoria(categoria);
+
+            this.store.anyadirCategoriaBD(categoria)
+            .then((category) => this.view.anyadirCategoria(category, this.deleteCategoryFromStore.bind(this)))
+            .catch((error) => alert(error))
+
             this.view.vistaCategorias();
         } catch(error) {
             this.view.renderError(error);
@@ -58,10 +62,14 @@ class Controller{
         if (document.getElementById("new-prod").checkValidity()) {
             try {
                 if(payload.id) {
+                    this.store.modificarProductoBD(payload)
                     this.modificarProducto(payload);
                 } else {
                     let producto = this.store.addProduct(payload);
-                    this.view.anyadirProducto(producto, this.deleteProductFromStore.bind(this), this.sumarProducto.bind(this), this.restarProducto.bind(this), this.editarProducto.bind(this));
+
+                    this.store.anyadirProductoBD(producto)
+                    this.view.anyadirProducto(producto, this.deleteProductFromStore.bind(this), this.sumarProducto.bind(this), this.restarProducto.bind(this), this.editarProducto.bind(this))
+                    
                     this.view.total(this.store.totalImport());
                     this.view.vistaProductos();
                 }  
@@ -83,14 +91,20 @@ class Controller{
         }
     }
     
-    init() {
-        this.store.initDate();
-        this.store.categories.forEach((categoria) => this.view.anyadirCategoria(categoria))
+    async init() {
+        try {
+            await this.store.initDate()
+        } catch (error) {
+            console.log(error)
+            return;
+        }
+        
+        this.store.categories.forEach((categoria) => this.view.anyadirCategoria(categoria, this.deleteCategoryFromStore.bind(this)))
         this.store.products.forEach((producto) => this.view.anyadirProducto(producto, this.deleteProductFromStore.bind(this), this.sumarProducto.bind(this), this.restarProducto.bind(this), this.editarProducto.bind(this)))
-        this.view.total(this.store.totalImport());
-        this.iniciarMenu();
-        this.view.vistaProductos();
-        this.listenersValidator();
+        this.view.total(this.store.totalImport())
+        this.iniciarMenu()
+        this.view.vistaProductos()
+        this.listenersValidator()
     }
 
     iniciarMenu() {
@@ -110,8 +124,12 @@ class Controller{
 
     deleteProductFromStore(id) {
     try{
-        this.store.delProduct(id);
-        this.view.removeProducto(id);
+        this.store.delProduct(id)
+
+        this.store.deleteProductoBD('products/' + id)
+        .then(this.view.removeProducto(id))
+        .catch((error) => alert(error))
+       
     } catch(error) {
         this.view.renderError(error);
     }
@@ -119,8 +137,12 @@ class Controller{
 
     deleteCategoryFromStore(id) {
         try {
-            this.store.delCategory(id);
-            this.view.removeCategoria(id);
+            this.store.delCategory(id)
+
+            this.store.deleteCategoryBD('categories/' + id)
+            .then(this.view.removeCategoria(id))
+            .catch((error) => alert(error))
+            
         } catch(error) {
             this.view.renderError(error);
         }
@@ -128,14 +150,19 @@ class Controller{
 
     sumarProducto(payload) {
         let producto = this.store.masUds(payload);
-        this.view.units(producto);
+        this.store.anyadirUnidadesBD(producto.units, producto.id)
+        .then(this.view.units(producto))
+        .catch((error) => alert(error))
+
         this.view.total(this.store.totalImport());
     }
 
     restarProducto(payload) {
         try{
            let producto = this.store.menUds(payload);
-            this.view.units(producto);
+           this.store.anyadirUnidadesBD(producto.units, producto.id)
+           .then(this.view.units(producto))
+           .catch((error) => alert(error))
             this.view.total(this.store.totalImport());
         } catch(error) {
             this.view.renderError(error);
