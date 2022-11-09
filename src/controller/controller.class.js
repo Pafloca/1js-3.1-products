@@ -95,7 +95,7 @@ class Controller{
         try {
             await this.store.initDate()
         } catch (error) {
-            console.log(error)
+            this.view.renderError(error);
             return;
         }
         
